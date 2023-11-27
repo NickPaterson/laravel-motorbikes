@@ -21,6 +21,7 @@
             <x-input-error :messages="$errors->get('images')" class="mt-2" />
         </div>
 
+
         {{-- <div class="pt-6">
             <x-input-label for="image" :value="__('Images')" />
             <x-file-input id="image" class="block mt-1 w-full" type="file" name="image" :value="old('images')" required autofocus />

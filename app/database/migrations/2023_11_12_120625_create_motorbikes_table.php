@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('year');
             $table->integer('price');
             $table->string('slug')->unique();
+            $table->string('thumbnail_url');
         });
     }
 

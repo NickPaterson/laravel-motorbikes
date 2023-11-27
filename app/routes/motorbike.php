@@ -17,5 +17,5 @@ Route::post('/motorbike/create', [MotorbikeController::class, 'store'])
     ->middleware(['auth', 'verified'])
     ->name('motorbike.store');
 
-Route::get('/motorbikes/{motorbike}', [MotorbikeController::class, 'show']);
+Route::get('/motorbikes/{slug}', [MotorbikeController::class, 'show']);
 require __DIR__.'/auth.php';

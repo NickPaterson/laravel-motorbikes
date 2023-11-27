@@ -25,11 +25,15 @@
 
             {{-- {{ dd($motorbike->images) }} --}}
             {{-- {{ $images = json_decode($motorbike->images, true) }} --}}
-
+            {{-- {{dd($imagefile)}} --}}
+           
             @if (!empty($images))
                 @foreach ($images as $image)
+                    {{-- {{dd($image->path)}} --}}
                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                        <img src='{{ asset("storage/app") . $image }}' class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="...">
+                        {{-- <img src='{{ asset("storage/") . $image->path }}' class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..."> --}}
+                        {{-- <img src="{{ asset('storage/images/3/3-testing/EqaFtOq99Z0oGmkw9UQqTAap42DjTcVP68qQQgBE.png') }}" alt="Image"> --}}
+                        <img src="{{ url('storage/'.$image->path) }}" alt="{{ $image->originalName }}">
                     </div>
                 @endforeach
             @endif
