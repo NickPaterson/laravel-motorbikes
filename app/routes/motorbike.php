@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MotorbikeController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -11,11 +12,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/listings', [MotorbikeController::class, 'index']);
+
 Route::get('/motorbike/create', [MotorbikeController::class, 'create']);
 
-
 Route::middleware('auth')->group(function () {
-    Route::get('/manage-listings', [ListingsManagement::class, 'index']);
     Route::post('/motorbike/create', [MotorbikeController::class, 'store'])->name('motorbike.store');
     Route::get('/motorbike/edit/{slug}', [MotorbikeController::class, 'edit'])->name('motorbike.edit');
     Route::put('/motorbike/edit/{slug}', [MotorbikeController::class, 'update'])->name('motorbike.update');

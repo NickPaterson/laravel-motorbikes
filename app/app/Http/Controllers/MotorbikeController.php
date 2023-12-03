@@ -28,7 +28,7 @@ class MotorbikeController extends Controller
     public function index() : View
     {
         return view('pages/listings', [
-            'motorbikes' => Motorbike::all()
+            'motorbikes' => Motorbike::orderBy('updated_at', 'desc')->get()
         ]);
     }
 
@@ -60,7 +60,7 @@ class MotorbikeController extends Controller
     }
 
     // store a motorbike
-    public function store(Request $request) : To_Route
+    public function store(Request $request)
     {
         $user = Auth::user();
 
@@ -110,9 +110,13 @@ class MotorbikeController extends Controller
                 
                 // $path = $image->store('images/public' . $user->id . '/' . $slug);
                 // $path = $image->store('images/' . $user->id . '/' . $slug);
-                $image->store('public/images/' . $user->id . '/' . $slug);
-                $path = 'images/' . $user->id . '/' . $slug;
 
+                $path = $image->store('public/images/' . $user->id . '/' . $slug);
+
+                $path = str_replace('public/', '', $path);
+                //$path = 'images/' . $user->id . '/' . $slug;
+
+                //dd($image, $path);
                 array_push($imagesPaths, [
                     'path'=>$path,
                     'originalName'=>$originalName,
@@ -137,10 +141,7 @@ class MotorbikeController extends Controller
         // Save to the database
         $motorbike->save();
 
-        return to_route('dashboard', [
-            'motorbike' => $motorbike,
-            'images' => json_decode($motorbike->images)
-        ]);
+        return redirect()->route('dashboard');
     }
 
     // edit a motorbike
@@ -149,7 +150,13 @@ class MotorbikeController extends Controller
         $motorbike = Motorbike::where('slug', $slug)->first();
         $categoryController = new CategoryController();
         $categories = $categoryController->findAll();
+
         $images = json_decode($motorbike->images);
+        // dd($images);
+        foreach ($images as $key => $image) {
+            $images[$key]->url = Storage::url('public/' . $image->path); 
+        }
+
 
         return view('motorbikes/edit', [
             'motorbike' => $motorbike,
@@ -200,7 +207,9 @@ class MotorbikeController extends Controller
         $oldSlug = $motorbike->slug;
         // get current images
         $currentImages = json_decode($motorbike->images, true) ?? [];
-
+         
+        dd($request->images);
+        
         $motorbike->title = $request->title;
 
         // check if the title has changed
@@ -229,6 +238,7 @@ class MotorbikeController extends Controller
                 // $path = $image->store('images/public' . $user->id . '/' . $slug);
                 // $path = $image->store('images/' . $user->id . '/' . $slug);
                 $image->store('public/images/' . $user->id . '/' . $slug);
+                dd($image);
                 $path = 'images/' . $user->id . '/' . $slug;
 
                 array_push($imagesPaths, [
@@ -258,15 +268,9 @@ class MotorbikeController extends Controller
         $motorbike->year = $request->year;
         $motorbike->price = $request->price;
 
-        
-
-         
         $motorbike->save();
         
-        return to_route('dashboard', [
-            'motorbike' => $motorbike,
-            'images' => json_decode($motorbike->images)
-        ]);
+        return to_route('dashboard');
     }
 
     // delete a motorbike

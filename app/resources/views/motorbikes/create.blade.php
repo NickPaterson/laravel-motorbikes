@@ -15,25 +15,52 @@
 
         <!-- Images -->
 
-        <div class="pt-6">
+        {{-- <div class="pt-6">
             <x-input-label for="images" :value="__('Images')" />
             <x-file-input id="images" class="block mt-1 w-full" type="file" name="images[]" :value="old('images')" autofocus multiple />
             <x-input-error :messages="$errors->get('images')" class="mt-2" />
+        </div> --}}
+        {{-- 
+                <x-input-label for="images" :value="__('Images')" class="mt-6 mb-2" />
+                <div class="flex items-center justify-center w-full">    
+                    <label for="images" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                            </svg>
+                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                        </div>
+
+                        <input id="images" type="file" name="images[]"  class="hidden"  multiple />
+                    </label>
+                </div>  --}}
+        <x-input-label for="images" :value="__('Images')" class="mt-6 mb-2" />
+        <div class="flex items-center justify-center w-full">
+            <label for="images" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                <!-- ... Your existing label content ... -->
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                    </svg>
+                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                </div>
+                <input id="images" type="file" name="images[]"  class="hidden" multiple  onchange="previewImages(this.files)"/>
+                
+            </label>
         </div>
+        <div id="imagePreview" class="flex flex-wrap mt-4"></div>
+
+        
 
 
-        {{-- <div class="pt-6">
-            <x-input-label for="images" :value="__('Images')" />
-            <x-file-input id="images" class="block mt-1 w-full" type="file" name="images" :value="old('images')" autofocus />
-            <x-input-error :messages="$errors->get('images')" class="mt-2" />
-        </div>  --}}
 
 
-        <!-- Summary -->
+       <!-- Summary -->
         <div class="pt-6">
             <x-input-label for="summary" :value="__('Summary')" />
             <x-textarea-input id="summary" class="block mt-1 w-full" type="text" name="summary" :value="old('summary')" required autofocus>
-                {{__("old('summary')")}}
             </x-textarea-input>
             <x-input-error :messages="$errors->get('summary')" class="mt-2" />
         </div>
@@ -42,7 +69,6 @@
         <div class="pt-6">
             <x-input-label for="description" :value="__('Description')" />
             <x-textarea-input id="description" class="block mt-1 w-full" type="text" name="description" :value="old('description')" required autofocus>
-                {{__("old('description')")}}
             </x-textarea-input>
             <x-input-error :messages="$errors->get('description')" class="mt-2" />
         </div>
@@ -104,3 +130,48 @@
     </div>
 </x-app-layout>
 
+<script>
+    let tempImages = []; // Array to store temporary images
+
+    function previewImages(files) {
+        const previewContainer = document.getElementById('imagePreview');
+        
+        for (const file of files) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'relative';
+
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'absolute top-0 right-0 w-7 h-7 text-white bg-red-500 rounded-full';
+                deleteButton.innerHTML = '&times;';
+                deleteButton.onclick = function () {
+                    removeImageFromArray(file); // Remove the image from the temp array
+                    imageContainer.remove(); // Remove the image container when the delete button is clicked
+                };
+
+                const imageElement = document.createElement('img');
+                imageElement.src = e.target.result;
+                imageElement.className = 'w-16 h-16 object-cover rounded-md m-2'; // Adjust the size and styling as needed
+
+                imageContainer.appendChild(imageElement);
+                imageContainer.appendChild(deleteButton);
+
+                previewContainer.appendChild(imageContainer);
+
+                // Save image info in the temp array
+                tempImages.push({
+                    file: file,
+                    container: imageContainer
+                });
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeImageFromArray(file) {
+        tempImages = tempImages.filter(img => img.file !== file);
+    }
+</script>
