@@ -22,8 +22,8 @@ return new class extends Migration
             $table->text('summary');
             $table->string('make');
             $table->string('model');
-            $table->string('engine');
-            $table->string('year');
+            $table->integer('engine');
+            $table->integer('year');
             $table->integer('price');
             $table->string('slug')->unique();
             $table->string('thumbnail_url');

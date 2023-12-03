@@ -13,9 +13,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/listings', [MotorbikeController::class, 'index']);
 Route::get('/motorbike/create', [MotorbikeController::class, 'create']);
 
-Route::post('/motorbike/create', [MotorbikeController::class, 'store'])
-    ->middleware(['auth', 'verified'])
-    ->name('motorbike.store');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/manage-listings', [ListingsManagement::class, 'index']);
+    Route::post('/motorbike/create', [MotorbikeController::class, 'store'])->name('motorbike.store');
+    Route::get('/motorbike/edit/{slug}', [MotorbikeController::class, 'edit'])->name('motorbike.edit');
+    Route::put('/motorbike/edit/{slug}', [MotorbikeController::class, 'update'])->name('motorbike.update');
+    Route::delete('/motorbike/{motorbike}', [MotorbikeController::class, 'destroy'])->name('motorbike.destroy');
+
+});
+
+
 
 Route::get('/motorbikes/{slug}', [MotorbikeController::class, 'show']);
 require __DIR__.'/auth.php';
+
