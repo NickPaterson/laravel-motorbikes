@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="m-4 p-4">
-    <form method="POST" action="{{ route('motorbike.edit', ['slug' => $motorbike->slug]) }}" enctype="multipart/form-data">
+    <form method="POST" action='{{ route('motorbike.update', ['motorbike' => $motorbike]) }}' enctype="multipart/form-data">
         @csrf
 
         @method('put')
@@ -109,13 +109,13 @@
 
 
 <script>
-    let tempImages = []; // Array to store temporary images
+    // Create an empty array 
+    let tempImages = []; 
     const previewContainer = document.getElementById('imagePreview');
     function previewImages(files) {
         
         for (const file of files) {
             const reader = new FileReader();
-
             reader.onload = function (e) {
                 const imageContainer = createImageContainer(file, e.target.result);
 
@@ -125,7 +125,6 @@
                     container: imageContainer
                 });
             };
-
             reader.readAsDataURL(file);
         }
     }

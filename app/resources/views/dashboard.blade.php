@@ -12,11 +12,11 @@
         @foreach ($motorbikes as $motorbike)
         
         <div class=" w-full lg:max-w-full lg:flex shadow-sm p-4">
-            <div class="h-48 lg:h-56 lg:w-48 flex-none bg-cover rounded-t-md lg:rounded-t-none lg:rounded-l-md text-center overflow-hidden bg-center">
+            <div class="h-48 lg:h-56 lg:w-48 flex border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-cover rounded-t-md lg:rounded-t lg:rounded-l-md text-center overflow-hidden bg-center">
                 <img src="{{ url('storage/'.$motorbike->thumbnail_url) }}" alt="motorbike thumbnail">
             </div>
             
-            <div class="flex lg:flex-row flex-1 border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white dark:bg-gray-800 rounded-b-md lg:rounded-b-none lg:rounded-r-md p-4 flex flex-col justify-between leading-normal">
+            <div class="flex lg:flex-row flex-1 border-r border-b border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white dark:bg-gray-800 rounded-b-md lg:rounded-b-none lg:rounded-r-md p-4 flex flex-col justify-between leading-normal">
                 <div class="flex flex-col mb-8 justify-between ">
                     <div class="">
                         <p class="text-gray-900 dark:text-white font-bold text-xl mb-2">{{$motorbike->title}}</p>
@@ -35,7 +35,7 @@
                             View
                         </button>
                     </a>
-                    <a href="/motorbike/edit/{{$motorbike->slug}}">
+                    <a href="/motorbike/edit/{{$motorbike->id}}">
                         <button type="button" class="w-32 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                             Edit
                         </button>

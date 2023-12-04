@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Motorbike;
 
 class AdminController extends Controller
 {
@@ -14,5 +13,16 @@ class AdminController extends Controller
         return view('admin/index', [
             'users' => $users
         ]);
+    }
+
+    public function upgrade(User $user, Request $request) {
+        $role = $request->input('role');
+        $user->update([
+            'is_admin' => $role === 'admin',
+            'is_mod' => $role === 'mod',
+        ]);
+      
+        return redirect()->back()->with('success', 'User upgraded successfully.');
+
     }
 }

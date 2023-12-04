@@ -28,7 +28,7 @@ class MotorbikeController extends Controller
     public function index() : View
     {
         return view('pages/listings', [
-            'motorbikes' => Motorbike::orderBy('updated_at', 'desc')->get()
+            'motorbikes' => Motorbike::latest()->filter(request(['search']))->get(),
         ]);
     }
 
@@ -65,7 +65,7 @@ class MotorbikeController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'category'      => 'required|integer|max:5',
+            'category'      => 'required|integer',
             'summary'       => 'required|string|max:500',
             'description'   => 'required|string|max:5000',
             'make'          => 'required|string|max:100',
@@ -111,7 +111,7 @@ class MotorbikeController extends Controller
                 // $path = $image->store('images/public' . $user->id . '/' . $slug);
                 // $path = $image->store('images/' . $user->id . '/' . $slug);
 
-                $path = $image->store('public/images/' . $user->id . '/' . $slug);
+                $path = $image->store('public/images/' . $user->id);
 
                 $path = str_replace('public/', '', $path);
                 //$path = 'images/' . $user->id . '/' . $slug;
@@ -122,9 +122,12 @@ class MotorbikeController extends Controller
                     'originalName'=>$originalName,
                     'mime'=>$mime
                 ]);
+                $motorbike->images = json_encode($imagesPaths);
+                $motorbike->thumbnail_url = $imagesPaths[0]['path'];
             }
-            $motorbike->images = json_encode($imagesPaths);
-            $motorbike->thumbnail_url = $imagesPaths[0]['path'];
+        } else 
+        {
+            $motorbike->thumbnail_url = 'images/No-Image-Placeholder.png';
         }
         
         $motorbike->user_id = $user->id;
@@ -145,19 +148,22 @@ class MotorbikeController extends Controller
     }
 
     // edit a motorbike
-    public function edit($slug): View
+    //public function edit($slug): View
+    public function edit(Motorbike $motorbike): View
     {
-        $motorbike = Motorbike::where('slug', $slug)->first();
+        //$motorbike = Motorbike::where('slug', $slug)->first();
         $categoryController = new CategoryController();
         $categories = $categoryController->findAll();
-
         $images = json_decode($motorbike->images);
-        // dd($images);
-        foreach ($images as $key => $image) {
-            $images[$key]->url = Storage::url('public/' . $image->path); 
+
+        if ($images) {
+            
+            // dd($images);
+            foreach ($images as $key => $image) {
+                $images[$key]->url = Storage::url('public/' . $image->path); 
+            }
         }
-
-
+        
         return view('motorbikes/edit', [
             'motorbike' => $motorbike,
             'categories' => $categories,
@@ -166,19 +172,19 @@ class MotorbikeController extends Controller
     }
 
     // update a motorbike
-    public function update(Request $request, $slug) 
+    public function update(Request $request, Motorbike $motorbike) 
     {
         $user = Auth::user();
 
-        // if motorbike not found response with 404 error
+        //if motorbike not found response with 404 error
         try {
-            $motorbike = Motorbike::where('slug', $slug)->firstOrFail();
+            Motorbike::where('id', $motorbike->id) ? true : false;
         } catch  (ModelNotFoundException $e) {
             return abort(404);
         }
         
         $request->validate([
-            'category'      => 'required|integer|max:5',
+            'category'      => 'required|integer',
             'summary'       => 'required|string|max:500',
             'description'   => 'required|string|max:5000',
             'make'          => 'required|string|max:100',
@@ -204,11 +210,12 @@ class MotorbikeController extends Controller
         ]);
         
         // save the old slug 
+        $slug = $motorbike->slug;
         $oldSlug = $motorbike->slug;
         // get current images
         $currentImages = json_decode($motorbike->images, true) ?? [];
          
-        dd($request->images);
+        //dd($request->images);
         
         $motorbike->title = $request->title;
 
@@ -217,10 +224,11 @@ class MotorbikeController extends Controller
             $slug = $user->id . "-" . str_replace(' ', '-', $request->title);
             if($oldSlug !== $slug) {
                 // Move current images
-                Storage::move("public/images/{$user->id}/{$oldSlug}", "public/images/{$user->id}/{$slug}");
+                // No longer need to move the images as they no longer saved by their slug
+                //Storage::move("public/images/{$user->id}/{$oldSlug}", "public/images/{$user->id}/{$slug}");
                 if (!empty($currentImages)) {
                     foreach ($currentImages as $image) {
-                        $image['path'] = 'images/' . $user->id . '/' . $slug;
+                        $image['path'] = 'images/' . $user->id ;
                     }
                 }
             }
@@ -237,29 +245,27 @@ class MotorbikeController extends Controller
                 
                 // $path = $image->store('images/public' . $user->id . '/' . $slug);
                 // $path = $image->store('images/' . $user->id . '/' . $slug);
-                $image->store('public/images/' . $user->id . '/' . $slug);
-                dd($image);
-                $path = 'images/' . $user->id . '/' . $slug;
+                $path = $image->store('public/images/' . $user->id);
+
+                $path = str_replace('public/', '', $path);
 
                 array_push($imagesPaths, [
                     'path'=>$path,
                     'originalName'=>$originalName,
                     'mime'=>$mime
                 ]);
-            }
-            
-            
+            }  
             // merge current and new images arrays
             $imagesPaths = array_merge($currentImages, $imagesPaths);
-
             $motorbike->images = json_encode($imagesPaths);
             $motorbike->thumbnail_url = $imagesPaths[0]['path'];
-        }
-        
-        
+         } 
+         // should have already been done
+        // else {
+        //     $motorbike->thumbnail_url = 'images/No-Image-Placeholder.png';
+        // }
         
         $motorbike->category_id = $request->category;
-        
         $motorbike->summary = $request->summary;
         $motorbike->description = $request->description;
         $motorbike->make = $request->make;
@@ -287,7 +293,8 @@ class MotorbikeController extends Controller
 
         if (!empty($images)) {
             foreach ($images as $image) {
-                Storage::delete($image['path']);
+                //dd($image['path']);
+                Storage::delete('public/'.$image['path']);
             }
         }
 
@@ -297,3 +304,5 @@ class MotorbikeController extends Controller
         return to_route('dashboard');
     }
 }
+
+

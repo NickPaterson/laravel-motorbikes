@@ -14,7 +14,7 @@
 
                 <!-- Search Form -->
                 <div class="flex items-center flex-auto sm:ml-52 ">
-                    <form action="#" method="GET" class="md:block md:pl-2 flex-auto">
+                    <form action="/" method="GET" value={{ request('search') }} class="md:block md:pl-2 flex-auto">
                         <label for="topbar-search" class="sr-only">Search Motorbikes</label>
                         <div class="relative ">
                         <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
