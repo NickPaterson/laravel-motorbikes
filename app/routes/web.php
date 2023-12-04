@@ -17,16 +17,17 @@ use App\Models\Motorbike;
 |
 */
 
-// Create a homepage
+// Create a homepage the listings page is the homepage for now
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 
 Route::get('/', [MotorbikeController::class, 'index']);
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/phpinfo', function () {
+//     return view('pages/phpinfo');
+// });
+
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -39,4 +40,5 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 require __DIR__.'/motorbike.php';
+require __DIR__.'/admin.php';
 

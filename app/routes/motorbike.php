@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 */
+Route::get('/dvla-test', function () {
+    return view('pages/dvla-test');
+});
 
 Route::get('/listings', [MotorbikeController::class, 'index']);
 
