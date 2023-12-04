@@ -38,12 +38,12 @@ class MotorbikeController extends Controller
         $motorbike = Motorbike::where('slug', $slug)->firstOrFail();
         $images = json_decode($motorbike->images);
 
-        $imagefile = Storage::url($images[0]->path);
+        //$imagefile = Storage::url($images[0]->path);
         // dd($imagefile);
         return view('pages/motorbike', [
             'motorbike' => $motorbike,
             'images' => $images,
-            'imagefile' => $imagefile,
+            //'imagefile' => $imagefile,
         ]);
     }
 

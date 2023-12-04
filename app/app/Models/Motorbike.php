@@ -21,13 +21,11 @@ class Motorbike extends Model
 
     public function scopeFilter($query, array $filters)
     {
-        if ($fitlers['search'] ?? false ) {
-            $query 
-                ->where('title', 'like', '%' . request('search') . '%')
-                ->orWhere('summary', 'like', '%' . request('search') . '%')
-                ->orWhere('description', 'like', '%' . request('search') . '%')
-                ->orWhere('make', 'like', '%' . request('search') . '%')
-                ->orWhere('model', 'like', '%' . request('search') . '%');
-        }
+        $query 
+            ->where('title', 'like', '%' . request('search') . '%')
+            ->orWhere('summary', 'like', '%' . request('search') . '%')
+            ->orWhere('description', 'like', '%' . request('search') . '%')
+            ->orWhere('make', 'like', '%' . request('search') . '%')
+            ->orWhere('model', 'like', '%' . request('search') . '%');
     }
 }
