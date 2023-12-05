@@ -122,9 +122,9 @@
             <div class="pt-6">
                 <x-input-label for="engine" :value="__('Engine Size')" />
                 @if (is_array($dvlaData) && isset($dvlaData['engineCapacity']))
-                    <x-text-input id="make" class="block mt-1 w-full" type="text" name="make" value="{{$dvlaData['engineCapacity']}}" required autofocus />
+                    <x-text-input id="engine" class="block mt-1 w-full" type="text" name="engine" value="{{$dvlaData['engineCapacity']}}" required autofocus />
                 @else
-                    <x-text-input id="make" class="block mt-1 w-full" type="text" name="make" :value="old('make')" required autofocus />
+                    <x-text-input id="engine" class="block mt-1 w-full" type="text" name="engine" :value="old('engine')" required autofocus />
                 @endif
                 <x-input-error :messages="$errors->get('engine')" class="mt-2" />
             </div>
@@ -133,9 +133,9 @@
             <div class="pt-6">
                 <x-input-label for="year" :value="__('Year')" />
                 @if (is_array($dvlaData) && isset($dvlaData['yearOfManufacture']))
-                    <x-text-input id="make" class="block mt-1 w-full" type="text" name="make" value="{{$dvlaData['yearOfManufacture']}}" required autofocus />
+                    <x-text-input id="year" class="block mt-1 w-full" type="text" name="year" value="{{$dvlaData['yearOfManufacture']}}" required autofocus />
                 @else
-                    <x-text-input id="make" class="block mt-1 w-full" type="text" name="make" :value="old('make')" required autofocus />
+                    <x-text-input id="year" class="block mt-1 w-full" type="text" name="year" :value="old('year')" required autofocus />
                 @endif<x-input-error :messages="$errors->get('year')" class="mt-2" />
             </div>
 
