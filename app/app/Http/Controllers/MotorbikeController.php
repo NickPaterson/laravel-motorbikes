@@ -53,9 +53,12 @@ class MotorbikeController extends Controller
         $categoryController = new CategoryController();
         $categories = $categoryController->findAll();
 
+        $dvlaData = $request->session()->get('dvlaData');
+
         return view('motorbikes/create', [
             'categories' => $categories,
             'request' => $request,
+            'dvlaData' => $dvlaData,
         ]);
     }
 

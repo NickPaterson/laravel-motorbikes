@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MotorbikeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DvlaController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Motorbike;
 use App\Models\User;
@@ -11,9 +12,8 @@ use App\Models\User;
 |--------------------------------------------------------------------------
 |
 */
-Route::get('/dvla-test', function () {
-    return view('pages/dvla-test');
-});
+Route::get('/dvla-test', [DvlaController::class, 'index']);
+Route::post('/dvla-test', [DvlaController::class, 'getVehicleInfo'])->name('dvla-test.getVehicleInfo');
 
 //Route::get('/motorbike/create', [MotorbikeController::class, 'create'])->middleware('can:create,App\Models\Motorbike');
 
